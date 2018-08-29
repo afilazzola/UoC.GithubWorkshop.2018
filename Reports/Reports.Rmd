@@ -1,0 +1,130 @@
+---
+title: Reports
+author: "Alex Filazzola"
+date: "June 18 2017"
+output:
+  html_document:
+    theme: sandstone
+    toc: true
+    toc_float: true
+---
+
+![](dilbert.gif)
+
+### 3.0 Writing active reports in R Studio
+
+R Studio is a surprisingly flexible interface that allows for the creation of documents that can assist in communicating your findings. I have adopted this approach of creating a GitHub repository and active report file in almost all of the projects I have been recently involved in. This allows for all collaborators on the projec to stay up to date on the analysis, workflow, and data work. It also provides a consolidate area where all the files that are associated with a project can be maintained. The report document works ancillary to supporting this data similar to meta-data file explaining the information present in the repository. Ideally, when you get better at generating these files it is possible to keep them dynamic and constantly updating.
+
+For example, lets say you have an experiment that surveys many times throughout its duration and has a particular analysis you expect. As the project continues along, certain individuals may expect updates that require you to conduct analysis and create figures. Having these dynamic reports though can make it as easy as dropping the newly surveyed dataset into the repository and clicking `knit` to revise the report. 
+
+### 3.1 R-Markdown Syntax
+
+[Markdown](https://en.wikipedia.org/wiki/Markdown) is a lightweight language that is meant to be a simplified version of HTML. It was created by two individuals, one of them being [Aaron Swartz](https://en.wikipedia.org/wiki/Aaron_Swartz) who is quite a controversal but remarkable individual. The relevancy here is that for those who have used HTML may have noticed the level of redundancy in applying text modifiers. 
+
+Here are some examples below of the differences
+
+Markdown          | HTML          | Output
+-----------------|----------------|-------------------
+`<b> text </b>`|`** text ** `| **text**
+`<h4> heading </h4>` | ` #### heading ` |  #### heading
+` <a href="http://www.google.com">Google</a`|`[Google](http://www.google.com)`|[Google](http://www.google.com)
+
+The simplified version of HTML makes it more accessible to the users. A cheatsheet of all the codes can be found within R Studio under help or [here](rmarkdown-reference.pdf). 
+
+R Markdown is an amplified version of Markdown. It contains all the same language used to simplify HTML, but also allows for a few others things, such as providing themes and color palettes. The most important feature though is the inclusion of R Code within the documents. This is what allows you to generate a report with analyses, figures, dataests, all embeded within your document. 
+
+First, let's experiment with writing an R Markdown document. Go to File --> New File --> R Markdown Document. Title it something simple without spaces. It will open with a default file that shows some of the basics of R Markdown. Currently, the file is only present as a Markdown file and has no formatting. To see it the way we would like, we need to `knit` the file which is shown with a ball of yarn on the top panel. When you click knit it will likely ask to save the file, which you can use the name you gave it earlier. The output has your name, date it was created, headers when specified, normal text, and also outputs from R, such a figures. This is a very simple document, but contains all the elements of what you would normally use when generating a report. 
+
+
+### 3.2 Using Chunks in R Markdown
+
+The chunks in R Markdown are how you add R text and outputs into your report. You can choose what to display in the report as well. Maybe you want to show all the code and output, but sometimes you want a more simple version that just shows the outputs. This can be toggled by what is specified in the chunk. 
+
+The way to start a chunk can either be typed out manually or by clicking the `insert` button here. Markdown here also supports other coding formats such as Python or SQL. The syntax is three [Grave Accents](https://en.wikipedia.org/wiki/Grave_accent) followed by `{r}`. Then the R code is put in there and functions identically to how your normal R console will work. Three Grave Accents close the chunk. 
+
+```{r}
+x <- 2 + 2
+x
+```
+
+Here the default is to display both the R code and R output. We can toggle that output only by saying `echo=FALSE`
+
+```{r echo=FALSE}
+x <- 2 + 2
+x
+```
+
+Let's try to plot with the R chunk using the default `cars` dataset.
+```{r}
+plot(cars$speed,cars$dist)
+```
+
+You could build up your report like so:
+
+### 3.3 Cars Experiment
+
+We tested the performance of 50 new cars travelling at different speeds to see the distance they could travel (Figure 1). The vehicles were drive on the same track over the course of 10 days. Speed was measured in miles per hour and cars were randomly chosen to drive at speeds between 0 and 25 miles per hour. Distance was measured in miles and was based on the distance travelled in 4 hours.
+
+```{r}
+## Plot the cars speed by distance
+plot(cars$speed,cars$dist, xlab="Speed (mph)", ylab="Distance (miles)", pch=19, cex=1.3, cex.axis=1.3, cex.lab=1.5)
+
+## Run a linear model comparing speed and distance
+m1 <- lm(dist~speed, data=cars)
+summary(m1) ## output of linear model
+
+## add linear model to plot
+abline(m1, col="Red", lwd=2)
+```
+
+To compare the distance traveled based on speed, we conducted a linear model with distance as the response variable and speed as the predictor variable. We found that speed significantly predicted distance traveled (F = 89.6, p < 0.001, R2 = 0.64).
+
+The full dataset is available below:
+
+```{r}
+knitr::kable(cars)
+```
+
+### 3.4 Other chunk features
+
+There are a few other manipulations you can add to your R Chunk that could come in handy when presenting your findings. Two other features I use often are the `warning` and `message`. Warnings often arise during your data analysis, and sometimes they can be disregarded. For example, when NAs are treated as zeros and you want them to be treated as zeros. Having this message appear in your report can make it look untidy or that you are ignoring something that is potentially relevant. Of course, you may not always want to ignore warnings, but assuming you do, adding it within the R chunch label can help `{r warning=FALSE}`. The same is true with messages. These most commonly arise when you load packages and certain functions are over-written (i.e. masked) by new functions. I tend to mute both of these options by setting `{r message=FALSE, warning=FALSE}`. 
+
+For example, here is what happens when I load the package dplyr without these settings
+
+```{r}
+library(dplyr)
+```
+
+Now we try it again with the warning and message set to false. 
+
+```{r warning=FALSE, message=FALSE}
+## first remove the previously loaded package
+detach("package:dplyr", unload=TRUE)
+## re-load the package
+library(dplyr)
+```
+
+Another issue we sometimes run into is the size of figures that sometimes does not fit within the page or looks awkward. Taking a look at our figure from before, we may decide that it looks too bunched up.
+
+```{r}
+## Plot the cars speed by distance
+plot(cars$speed,cars$dist, xlab="Speed (mph)", ylab="Distance (miles)", pch=19, cex=1.3, cex.axis=1.3, cex.lab=1.5)
+```
+
+Using `fig.width` or `fig.height` you can fit the plot better into the page and stretch it out.
+
+```{r, fig.width=10, fig.height=8}
+## Plot the cars speed by distance
+plot(cars$speed,cars$dist, xlab="Speed (mph)", ylab="Distance (miles)", pch=19, cex=1.3, cex.axis=1.3, cex.lab=1.5)
+```
+
+
+
+
+
+
+
+
+
+
+
