@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 University of Cincinnati | 
 ----------------|-----------------------------------
 Nov 27, 2018   | **Instructor**: [Alex Filazzola](http://www.filazzola.info)
-10:00 am - 1:00 pm   | **Co-instructors**: TBD
+11:30 am - 1:30 pm   | **Co-instructors**: TBD
 
 ### Get Tickets
 
