@@ -61,13 +61,12 @@ Statistical software that are also programming languages, such as R, are excelle
 
 Time   | Goal
 -------|------------
-10:00   | Meet & greet. Test software
-10:10  | [Github Introduction](Github/Github.html)
-10:45  | [Github and R Studio](Git.rstudio/Git.rstudio.html)
-11:30  | *coffee break*
-12:00  | [Creating Reports with R Studio](Reports/Reports.html)
-12:30  | [Publish Reports and websites](Website/website.html)
-12:45  | Final discussions
+11:30 am  | Meet & greet. Test software
+11:40 am | [Github Introduction](Github/Github.html)
+12:20 pm | [Github and R Studio](Git.rstudio/Git.rstudio.html)
+1:00 pm | [Creating Reports with R Studio](Reports/Reports.html)
+1:15 pm  | [Publish Reports and websites](Website/website.html)
+
 
 
 ## Software
