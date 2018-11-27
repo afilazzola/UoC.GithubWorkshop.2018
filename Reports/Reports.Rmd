@@ -23,7 +23,7 @@ For example, lets say you have an experiment that surveys many times throughout 
 
 Here are some examples below of the differences
 
-Markdown          | HTML          | Output
+HMTL          | Markdown          | Output
 -----------------|----------------|-------------------
 `<b> text </b>`|`** text ** `| **text**
 `<h4> heading </h4>` | ` #### heading ` |  #### heading
@@ -84,6 +84,21 @@ The full dataset is available below:
 ```{r}
 knitr::kable(cars)
 ```
+
+Perhaps though you have a large dataset and you want to be able to go through it more easily. For example the mtcars dataset that is 32 rows by 11 columns can look unwieldy in a report. 
+
+```{r}
+knitr::kable(mtcars)
+```
+
+This is where `datatable` can come in that provides a better user interface for data frames that are presented in reports. Allowing for easier movement within the dataset and the option to search. 
+
+```{r warning=FALSE, message=FALSE}
+library(DT)
+datatable(mtcars) 
+```
+
+Alternatively there are many ways to specify the `kable` function that can be found [here](https://haozhu233.github.io/kableExtra/awesome_table_in_html.html). 
 
 ### 3.4 Other chunk features
 
