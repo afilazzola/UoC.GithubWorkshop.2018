@@ -108,4 +108,71 @@ output:
 ---
 ```
 
+### 4.2 Shiny Apps
 
+Shiny Apps are the ultimate website version of your analyses. A Shiny App is an online version of your dataset that is interactive and has the potential to be automative. This allows people viewing your data to explore it. There is also the potential to make your analyses automated such that you simple upload a new file and the previous analyse are re-conducted. 
+
+For example, if you had a long-term experiment where you surveyed data every year. You could have an online Shiny App that allows you to upload the new dataset each year and have all the analyses conducted for you. 
+
+Here are some [examples](https://shiny.rstudio.com/gallery/) of Shiny Apps that can all be generated through R.Studio and supported on Github. 
+
+I created a [Shiny App](https://afilazzola.shinyapps.io/climatescanapplication/) for a climate consortium in Ontario that was conducted climate risk scans for local municipalities. The consortium had some fairly complicated calculation of risk based on the survey data provided by the municipalities that they met with. My time with them was contractual so once I had left, there would be no one familiar with my code and likely unable to use it. Instead, I wrote this application within R Studio to conduct the analyses and all they are required to do is upload the survey dataset once it is collected. 
+
+### 4.3 Shiny App Example
+
+Let’s try making a very simple Shiny App. Shiny App’s using slightly different syntax than what we are familiar with, but still require the markdown language and R language we are now familiar with. 
+
+First, we go to file --> new file --> shiny app. This will create a directory with all the shiny files within your current repository. Type in a name for the app and a template Shiny App will be generated. 
+
+Shiny Apps are broken down into two main files that you need to consider. The user interface file (ui.r) and the server file (server.r). The UI is the code for what you are interacting with when you first enter the website or application. The server file is the backend analyses or work that occurs when something is done on the UI. You will now notice a “Run App” option in the top corner. 
+
+Let’s delete all the information that is there and generate a new code. Let’s say we want to plot the mtcars dataset but choose which variables are compared. The trick here is that Apps work as a compiling language. This means that all of it has to work or none of it does. Unlike in normal R where you can run line-by-line to troubleshoot errors, here the error can be anywhere in your code. The trick here then is to build you app one feature and analysis at a time into something fully functional. 
+
+First, we write the code in the server to see the analysis. We can to compare miles per gallon (MPG) among the other different variables.  Under the server we want to create a render plot command. The UI.r and server.r communicate through the `input` and `output` arguments. Thus, the `input` will be what we change in the server side to change the look of the plot and the `output` will be our plot. 
+
+```{r eval=FALSE}
+# Define server logic require to create scatter plot of dataset
+shinyServer(function(input, output) {
+   
+  output$plot <- renderPlot({
+    var2 <- mtcars[,input$variable]
+    plot(mtcars$mpg, var2)
+  })
+})
+
+
+```
+Here we specify the renderPlot command, describe our second variabl that will change based on the input, and then add that second variable to the plot with `mpg`. 
+
+The key features to remember here is that we specified `input$variable` and `output$plot`. That means in the UI.r we need to describe `variable` and `plot` for those to work in the server side. 
+
+Now we flip to the UI side. Here is what the code looks like
+
+```{r eval=FALSE}
+
+# Define UI for application
+shinyUI(fluidPage(
+  
+  # Sidebar with a slider input for number of bins 
+  sidebarLayout(
+    sidebarPanel(
+    selectInput("variable", "Variable:",
+                c("Cylinders" = "cyl",
+                  "Transmission" = "am",
+                  "Gears" = "gear"))
+    ),
+    
+    # Show a plot of the generated distribution
+    mainPanel(
+       plotOutput("plot")
+    )
+  )
+  ))
+
+```
+
+Take a look specifically at the `selectInput` command. The first argument is our `variable` call from the server and is what connects the user input to the function we wrote on the server side. The "Variable:" is just a text description for the user to understand what the dropdown input menu is doing. Then final arguments are what the options will be here. We have taken the column headings from the `mtcars` dataset. The text infront is again just to make it easier for the user. 
+
+The final item is to make the plot. That part is simple with calling `plotOutput` and the `plot` output from our server.The rest of the code here is to pretty up our User Interface by generating a side panel. 
+
+Unforatuntely, Shiny Apps because they are interactive are not supported through the webpage option on Github. However, [Shiny](https://www.shinyapps.io/) themeselves allow you to put your App on their website once you set up an account. They allow free hosting with some limitations. That is currently where my climate application resides.
